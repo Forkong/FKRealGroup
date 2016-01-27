@@ -1,0 +1,335 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7907E8141C576D4700CD0FCE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7907E8131C576D4700CD0FCE /* AppKit.framework */; };
+		7907E8161C576D4700CD0FCE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7907E8151C576D4700CD0FCE /* Foundation.framework */; };
+		7907E81A1C576D4700CD0FCE /* FKRealGroup.xcscheme in Resources */ = {isa = PBXBuildFile; fileRef = 7907E8191C576D4700CD0FCE /* FKRealGroup.xcscheme */; };
+		7907E81D1C576D4700CD0FCE /* FKRealGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 7907E81C1C576D4700CD0FCE /* FKRealGroup.m */; };
+		7907E8201C576D4700CD0FCE /* NSObject_Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7907E81F1C576D4700CD0FCE /* NSObject_Extension.m */; };
+		79A868741C58764C00557DF6 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 79A868731C58764C00557DF6 /* JRSwizzle.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7907E8101C576D4700CD0FCE /* FKRealGroup.xcplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FKRealGroup.xcplugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		7907E8131C576D4700CD0FCE /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		7907E8151C576D4700CD0FCE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		7907E8191C576D4700CD0FCE /* FKRealGroup.xcscheme */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = FKRealGroup.xcscheme; path = FKRealGroup.xcodeproj/xcshareddata/xcschemes/FKRealGroup.xcscheme; sourceTree = SOURCE_ROOT; };
+		7907E81B1C576D4700CD0FCE /* FKRealGroup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FKRealGroup.h; sourceTree = "<group>"; };
+		7907E81C1C576D4700CD0FCE /* FKRealGroup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FKRealGroup.m; sourceTree = "<group>"; };
+		7907E81E1C576D4700CD0FCE /* NSObject_Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSObject_Extension.h; sourceTree = "<group>"; };
+		7907E81F1C576D4700CD0FCE /* NSObject_Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSObject_Extension.m; sourceTree = "<group>"; };
+		7907E8211C576D4700CD0FCE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7907E8281C57753C00CD0FCE /* DVTPlugInLocalizedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVTPlugInLocalizedString.h; sourceTree = "<group>"; };
+		79A868721C58764C00557DF6 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		79A868731C58764C00557DF6 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		79A868751C588C4A00557DF6 /* IDEStructureNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEStructureNavigator.h; sourceTree = "<group>"; };
+		79A868791C588D4C00557DF6 /* IDEOutlineBasedNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEOutlineBasedNavigator.h; sourceTree = "<group>"; };
+		79A8687B1C58963700557DF6 /* IDEContainerItemStructureEditingTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEContainerItemStructureEditingTarget.h; sourceTree = "<group>"; };
+		79A8687C1C58988300557DF6 /* PBXGroup-PBXDropReceiverAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXDropReceiverAdditions.h"; sourceTree = "<group>"; };
+		79A8687D1C58988300557DF6 /* PBXGroup-PBXIconImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXIconImageAdditions.h"; sourceTree = "<group>"; };
+		79A8687E1C58988300557DF6 /* PBXGroup-PBXInspectorPanelSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXInspectorPanelSupport.h"; sourceTree = "<group>"; };
+		79A8687F1C58988300557DF6 /* PBXGroup-SmartGroupFilterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-SmartGroupFilterAPI.h"; sourceTree = "<group>"; };
+		79A868801C58988300557DF6 /* PBXGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroup.h; sourceTree = "<group>"; };
+		79A868811C58988300557DF6 /* PBXGroupEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupEnumerator.h; sourceTree = "<group>"; };
+		79A868821C58988300557DF6 /* PBXGroupInspectorPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupInspectorPane.h; sourceTree = "<group>"; };
+		79A868831C58988300557DF6 /* PBXGroupTargetProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupTargetProxy.h; sourceTree = "<group>"; };
+		79A868841C58988300557DF6 /* PBXGroupTreeModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupTreeModule.h; sourceTree = "<group>"; };
+		79A868851C58A45600557DF6 /* IDEGroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEGroupWrapper.h; sourceTree = "<group>"; };
+		79A868861C58A45600557DF6 /* Xcode3GroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Xcode3GroupWrapper.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7907E80E1C576D4700CD0FCE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7907E8141C576D4700CD0FCE /* AppKit.framework in Frameworks */,
+				7907E8161C576D4700CD0FCE /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7907E8071C576D4700CD0FCE = {
+			isa = PBXGroup;
+			children = (
+				7907E8171C576D4700CD0FCE /* FKRealGroup */,
+				7907E8121C576D4700CD0FCE /* Frameworks */,
+				7907E8111C576D4700CD0FCE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7907E8111C576D4700CD0FCE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7907E8101C576D4700CD0FCE /* FKRealGroup.xcplugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7907E8121C576D4700CD0FCE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7907E8131C576D4700CD0FCE /* AppKit.framework */,
+				7907E8151C576D4700CD0FCE /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7907E8171C576D4700CD0FCE /* FKRealGroup */ = {
+			isa = PBXGroup;
+			children = (
+				7907E81B1C576D4700CD0FCE /* FKRealGroup.h */,
+				7907E81C1C576D4700CD0FCE /* FKRealGroup.m */,
+				7907E81E1C576D4700CD0FCE /* NSObject_Extension.h */,
+				7907E81F1C576D4700CD0FCE /* NSObject_Extension.m */,
+				79A868721C58764C00557DF6 /* JRSwizzle.h */,
+				79A868731C58764C00557DF6 /* JRSwizzle.m */,
+				7907E8271C57753C00CD0FCE /* Header */,
+				7907E8211C576D4700CD0FCE /* Info.plist */,
+				7907E8181C576D4700CD0FCE /* Supporting Files */,
+			);
+			path = FKRealGroup;
+			sourceTree = "<group>";
+		};
+		7907E8181C576D4700CD0FCE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				7907E8191C576D4700CD0FCE /* FKRealGroup.xcscheme */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7907E8271C57753C00CD0FCE /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				7907E8281C57753C00CD0FCE /* DVTPlugInLocalizedString.h */,
+				79A868751C588C4A00557DF6 /* IDEStructureNavigator.h */,
+				79A8687B1C58963700557DF6 /* IDEContainerItemStructureEditingTarget.h */,
+				79A868791C588D4C00557DF6 /* IDEOutlineBasedNavigator.h */,
+				79A8687C1C58988300557DF6 /* PBXGroup-PBXDropReceiverAdditions.h */,
+				79A8687D1C58988300557DF6 /* PBXGroup-PBXIconImageAdditions.h */,
+				79A8687E1C58988300557DF6 /* PBXGroup-PBXInspectorPanelSupport.h */,
+				79A8687F1C58988300557DF6 /* PBXGroup-SmartGroupFilterAPI.h */,
+				79A868801C58988300557DF6 /* PBXGroup.h */,
+				79A868811C58988300557DF6 /* PBXGroupEnumerator.h */,
+				79A868821C58988300557DF6 /* PBXGroupInspectorPane.h */,
+				79A868831C58988300557DF6 /* PBXGroupTargetProxy.h */,
+				79A868841C58988300557DF6 /* PBXGroupTreeModule.h */,
+				79A868851C58A45600557DF6 /* IDEGroupWrapper.h */,
+				79A868861C58A45600557DF6 /* Xcode3GroupWrapper.h */,
+			);
+			path = Header;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7907E80F1C576D4700CD0FCE /* FKRealGroup */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7907E8241C576D4700CD0FCE /* Build configuration list for PBXNativeTarget "FKRealGroup" */;
+			buildPhases = (
+				7907E80C1C576D4700CD0FCE /* Sources */,
+				7907E80D1C576D4700CD0FCE /* Resources */,
+				7907E80E1C576D4700CD0FCE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FKRealGroup;
+			productName = FKRealGroup;
+			productReference = 7907E8101C576D4700CD0FCE /* FKRealGroup.xcplugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7907E8081C576D4700CD0FCE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = Fujun;
+				TargetAttributes = {
+					7907E80F1C576D4700CD0FCE = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = 7907E80B1C576D4700CD0FCE /* Build configuration list for PBXProject "FKRealGroup" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7907E8071C576D4700CD0FCE;
+			productRefGroup = 7907E8111C576D4700CD0FCE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7907E80F1C576D4700CD0FCE /* FKRealGroup */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7907E80D1C576D4700CD0FCE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7907E81A1C576D4700CD0FCE /* FKRealGroup.xcscheme in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7907E80C1C576D4700CD0FCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7907E81D1C576D4700CD0FCE /* FKRealGroup.m in Sources */,
+				7907E8201C576D4700CD0FCE /* NSObject_Extension.m in Sources */,
+				79A868741C58764C00557DF6 /* JRSwizzle.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7907E8221C576D4700CD0FCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+			};
+			name = Debug;
+		};
+		7907E8231C576D4700CD0FCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+			};
+			name = Release;
+		};
+		7907E8251C576D4700CD0FCE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				INFOPLIST_FILE = FKRealGroup/Info.plist;
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifujun.fkrealgroup.FKRealGroup;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Debug;
+		};
+		7907E8261C576D4700CD0FCE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(HOME)";
+				INFOPLIST_FILE = FKRealGroup/Info.plist;
+				INSTALL_PATH = "/Library/Application Support/Developer/Shared/Xcode/Plug-ins";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ifujun.fkrealgroup.FKRealGroup;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xcplugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7907E80B1C576D4700CD0FCE /* Build configuration list for PBXProject "FKRealGroup" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7907E8221C576D4700CD0FCE /* Debug */,
+				7907E8231C576D4700CD0FCE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7907E8241C576D4700CD0FCE /* Build configuration list for PBXNativeTarget "FKRealGroup" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7907E8251C576D4700CD0FCE /* Debug */,
+				7907E8261C576D4700CD0FCE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7907E8081C576D4700CD0FCE /* Project object */;
+}
