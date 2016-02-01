@@ -1,4 +1,3 @@
-//
 //  FKRealGroup.m
 //  FKRealGroup
 //
@@ -12,28 +11,50 @@
 #import <objc/runtime.h>
 #import "IDEStructureNavigator.h"
 #import "IDEContainerItemStructureEditingTarget.h"
+#import "Xcode3Group.h"
 #import "PBXGroup.h"
-#import "PBXGroup-PBXDropReceiverAdditions.h"
-#import "PBXGroupTreeModule.h"
-#import "Xcode3GroupWrapper.h"
 
 static NSString * const kFKRealGroupKey = @"FKRealGroup";
-
+static NSString * const kPathStringKey = @"pathString";
+static NSString * const kNewSubgroupIndexStringKey = @"newSubgroupIndex";
+static NSString * const kDVTPlugInLocalizedString = @"DVTPlugInLocalizedString";
+static NSString * const kIsDeleteRealGroupKey = @"isDeleteRealGroup";
+//------Key Path ---------
+static NSString * const kPathStringKeyPath = @"_targetGroup._resolvedFilePath._pathString";
+static NSString * const kStringValueBeforeEditingKeyPath = @"_stringValueBeforeEditing";
+//------Title ------------
+static NSString * const kNewRealGroupItemTitle = @"New Real Group";
+static NSString * const kDeleteRealGroupItemTitle = @"Delete Real Group";
+static NSString * const kMoveToTrashButtonTitle = @"Move to Trash";
+//------Context Key ------
+static NSString * const kIDEStructureNavigatorKey = @"Xcode.IDEStructureNavigator.MenuDefinition.ContextualMenu";
+static NSString * const kNewGroupContextKey = @"Xcode.IDEKit.CmdDefinition.NewGroupContextual";
+static NSString * const kDeleteContextKey = @"Xcode.IDEKit.CmdDefinition.Delete";
+static NSString * const kDeleteRealGroupContextKey = @"Xcode.IDEKit.CmdDefinition.DeleteRealGroup";
+//------Notification------
 static NSString * const kFKRealGroupCreateNotificationKey = @"FKRealGroupCreateNotification";
-
 static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRealCreateNotification";
+static NSString * const kFKRealGroupDeleteRealGroupFlagNotificationKey = @"FKRealGroupDeleteRealGroupFlagNotification";
+static NSString * const kFKRealGroupDeleteRealGroupNotificationKey = @"FKRealGroupDeleteRealGroupNotification";
+static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMoveToTrashNotification";
 
 @interface FKRealGroup()
 <NSMenuDelegate, NSControlTextEditingDelegate, NSTextFieldDelegate>
+@property (nonatomic, strong, readwrite) NSBundle *bundle;
 
 @property (nonatomic, assign) NSCellStateValue menuState;
 
-@property (nonatomic, strong, readwrite) NSBundle *bundle;
-
 @property (nonatomic, copy) NSString *pathString;
-@property (nonatomic, copy) NSString *dictName;
 
 @property (nonatomic, assign) BOOL isRealCreate;
+
+@property (nonatomic, assign) BOOL isDeleteRealGroup;
+
+@property (nonatomic, assign) BOOL isMoveToTrash;
+
+@property (nonatomic, strong) IDEContainerItemStructureEditingTarget *ideTarget;
+
+@property (nonatomic, assign) NSInteger newSubgroupIndex;
 @end
 
 @implementation FKRealGroup
@@ -49,44 +70,104 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
     if (self = [super init])
     {
         self.bundle = plugin;
+        self.isMoveToTrash = YES;
+        
         [self addMethod];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(didApplicationFinishLaunchingNotification:)
                                                      name:NSApplicationDidFinishLaunchingNotification
                                                    object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(fkRealGroupCreateNotification:)
-                                                     name:kFKRealGroupCreateNotificationKey
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(fkRealGroupRealCreateNotification:)
-                                                     name:kFKRealGroupRealCreateNotificationKey
-                                                   object:nil];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(menuDidAddItemNotification:)
-                                                     name:NSMenuDidAddItemNotification
-                                                   object:nil];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(menuDidChangeItemNotification:)
-                                                     name:NSMenuDidChangeItemNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(controlTextDidEndEditingNotification:)
-                                                     name:NSControlTextDidEndEditingNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(controlTextDidBeginEditingNotification:)
-                                                     name:NSControlTextDidBeginEditingNotification
-                                                   object:nil];
     }
     return self;
+}
+
+- (void)addObservers
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fkRealGroupCreateNotification:)
+                                                 name:kFKRealGroupCreateNotificationKey
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fkRealGroupRealCreateNotification:)
+                                                 name:kFKRealGroupRealCreateNotificationKey
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fkRealGroupDeleteRealGroupNotification:)
+                                                 name:kFKRealGroupDeleteRealGroupNotificationKey
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fkRealGroupDeleteRealGroupFlagNotification:)
+                                                 name:kFKRealGroupDeleteRealGroupFlagNotificationKey
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(fkRealGroupMoveToTrashNotification:)
+                                                 name:kFKRealGroupMoveToTrashNotificationKey
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(menuDidAddItemNotification:)
+                                                 name:NSMenuDidAddItemNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(menuDidChangeItemNotification:)
+                                                 name:NSMenuDidChangeItemNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(controlTextDidEndEditingNotification:)
+                                                 name:NSControlTextDidEndEditingNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(controlTextDidBeginEditingNotification:)
+                                                 name:NSControlTextDidBeginEditingNotification
+                                               object:nil];
+    
+}
+
+- (void)removeObservers
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kFKRealGroupCreateNotificationKey
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kFKRealGroupRealCreateNotificationKey
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kFKRealGroupDeleteRealGroupNotificationKey
+                                                  object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kFKRealGroupDeleteRealGroupFlagNotificationKey
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kFKRealGroupMoveToTrashNotificationKey
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSMenuDidAddItemNotification
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSMenuDidChangeItemNotification
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSControlTextDidEndEditingNotification
+                                                  object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:NSControlTextDidBeginEditingNotification
+                                                  object:nil];
 }
 
 - (void)addMethod
@@ -96,12 +177,31 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
                 originMethod:@selector(contextMenu_newGroupFolderOrPage:)];
     
     [self addMethodWithClass:NSClassFromString(@"IDEStructureNavigator")
+                   newMethod:@selector(fk_contextMenu_delete:)
+                originMethod:@selector(contextMenu_delete:)];
+    
+    [self addMethodWithClass:NSClassFromString(@"IDEStructureNavigator")
+                   newMethod:@selector(fk_contextMenu_deleteRealGroup:)
+                originMethod:nil];
+
+    [self addMethodWithClass:NSClassFromString(@"IDEStructureNavigator")
                    newMethod:@selector(fk_contextMenu_newRealGroupFolderOrPage:)
                 originMethod:nil];
     
     [self addMethodWithClass:NSClassFromString(@"IDEContainerItemStructureEditingTarget")
                    newMethod:@selector(fk_addNewSubgroupAtIndex:newGroupBlock:)
                 originMethod:@selector(_addNewSubgroupAtIndex:newGroupBlock:)];
+    
+    [self addMethodWithClass:NSClassFromString(@"IDEContainerItemStructureEditingTarget")
+                   newMethod:@selector(fk_structureEditingRemoveSubitemsAtIndexes:error:)
+                originMethod:@selector(structureEditingRemoveSubitemsAtIndexes:error:)];
+    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+    [self addMethodWithClass:[NSAlert class]
+                   newMethod:@selector(fk_buttonPressed:)
+                originMethod:@selector(buttonPressed:)];
+#pragma clang diagnostic pop
 }
 
 - (void)addMethodWithClass:(Class)className newMethod:(SEL)newMethod originMethod:(SEL)originMethod
@@ -118,11 +218,13 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
         if (originMethod)
         {
             NSError *error;
-            [className
-             jr_swizzleMethod:newMethod
-             withMethod:originMethod
-             error:&error];
-            NSLog(@"error = %@", error);
+            BOOL isSuccess = [className jr_swizzleMethod:newMethod withMethod:originMethod error:&error];
+#ifdef DEBUG
+            if (!isSuccess)
+            {
+                NSLog(@"error = %@", error);
+            }
+#endif
         }
     }
 }
@@ -141,47 +243,89 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
         if (originMethod)
         {
             NSError *error;
-            [className jr_swizzleClassMethod:newMethod
-                             withClassMethod:originMethod
-                                       error:&error];
-            NSLog(@"error = %@", error);
+            BOOL isSuccess = [className jr_swizzleClassMethod:newMethod
+                                              withClassMethod:originMethod
+                                                        error:&error];
+#ifdef DEBUG
+            if (!isSuccess)
+            {
+                NSLog(@"error = %@", error);
+            }
+#endif
         }
     }
 }
 
-#pragma mark -- notification
+#pragma mark - notification
 - (void)didApplicationFinishLaunchingNotification:(NSNotification*)noti
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:NSApplicationDidFinishLaunchingNotification
                                                   object:nil];
     
+    if ([self fkRealGroupState] == NSOnState)
+    {
+        [self addObservers];
+    }
+    
     [self addMenu];
 }
 
 - (void)menuDidChangeItemNotification:(NSNotification *)noti
 {
+    if (self.menuState != NSOnState)
+    {
+        return;
+    }
+    
     NSMenu *menu = noti.object;
-    if ([menu.title isKindOfClass:NSClassFromString(@"DVTPlugInLocalizedString")] &&
-        [[menu.title valueForKeyPath:@"_key"] isEqualToString:@"Xcode.IDEStructureNavigator.MenuDefinition.ContextualMenu"])
+    if ([menu.title isKindOfClass:NSClassFromString(kDVTPlugInLocalizedString)] &&
+        [[menu.title valueForKeyPath:@"_key"] isEqualToString:kIDEStructureNavigatorKey])
     {
         NSInteger index = [noti.userInfo[@"NSMenuItemIndex"] integerValue];
         NSMenuItem *item = menu.itemArray[index];
-        if (![item.title isKindOfClass:NSClassFromString(@"DVTPlugInLocalizedString")] &&
-            [item.title isEqualToString:@"New Real Group"])
+        
+        if (![item.title isKindOfClass:NSClassFromString(kDVTPlugInLocalizedString)])
         {
-            //与New Group保持一致
-            NSMenuItem *newGroupItem = menu.itemArray[index-1];
-            item.enabled = newGroupItem.enabled;
+            if ([item.title isEqualToString:kNewRealGroupItemTitle])
+            {
+                //与New Group保持一致
+                NSMenuItem *newGroupItem = menu.itemArray[index-1];
+                item.enabled = newGroupItem.enabled;
+            }
+            else if ([item.title isEqualToString:kDeleteRealGroupItemTitle])
+            {
+                //与Delete保持一致
+                NSMenuItem *deleteItem = menu.itemArray[index-1];
+                item.enabled = deleteItem.enabled;
+            }
+        }
+        else
+        {
+            if ([[item.title valueForKeyPath:@"_key"] isEqualToString:kNewGroupContextKey])
+            {
+                NSMenuItem *newRealGroupItem = menu.itemArray[index+1];
+                newRealGroupItem.enabled = item.enabled;
+            }
+            else if ([[item.title valueForKeyPath:@"_key"] isEqualToString:kDeleteContextKey])
+            {
+                NSMenuItem *deleteRealGroupItem = menu.itemArray[index+1];
+                deleteRealGroupItem.enabled = item.enabled;
+            }
         }
     }
 }
 
 - (void)menuDidAddItemNotification:(NSNotification *)noti
 {
+    if (self.menuState != NSOnState)
+    {
+        return;
+    }
+    
     NSMenu *menu = noti.object;
-    if ([menu.title isKindOfClass:NSClassFromString(@"DVTPlugInLocalizedString")] &&
-        [[menu.title valueForKeyPath:@"_key"] isEqualToString:@"Xcode.IDEStructureNavigator.MenuDefinition.ContextualMenu"] &&
+    if ([menu.title isKindOfClass:NSClassFromString(kDVTPlugInLocalizedString)] &&
+        [[menu.title valueForKeyPath:@"_key"] isEqualToString:kIDEStructureNavigatorKey] &&
         menu.delegate != self)
     {
         menu.delegate = self;
@@ -190,7 +334,7 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
 
 - (void)controlTextDidEndEditingNotification:(NSNotification *)noti
 {
-    if (self.menuState == NSOffState ||
+    if (self.menuState != NSOnState ||
         !self.isRealCreate)
     {
         return;
@@ -198,8 +342,9 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
     
     //真实修改文件名称
     self.pathString = nil;
-    self.dictName   = nil;
     self.isRealCreate = NO;
+    self.ideTarget = nil;
+    self.newSubgroupIndex = NSNotFound;
     
     NSTextField *textField = noti.object;
     if (textField.delegate == self)
@@ -209,7 +354,7 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
 }
 - (void)controlTextDidBeginEditingNotification:(NSNotification *)noti
 {
-    if (self.menuState == NSOffState ||
+    if (self.menuState != NSOnState ||
         !self.isRealCreate)
     {
         return;
@@ -226,7 +371,7 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
 
 - (void)fkRealGroupCreateNotification:(NSNotification *)noti
 {
-    if (self.menuState == NSOffState ||
+    if (self.menuState != NSOnState ||
         !self.isRealCreate)
     {
         return;
@@ -234,50 +379,104 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
     
     NSDictionary *userInfo = noti.userInfo;
     
-    self.pathString = userInfo[@"pathString"];
+    self.ideTarget = noti.object;
     
-    if (self.pathString &&
-        ![self.pathString isEqualToString:@""])
+    self.pathString = userInfo[kPathStringKey];
+    self.newSubgroupIndex = [userInfo[kNewSubgroupIndexStringKey] integerValue];
+}
+/**
+ *  设置标识
+ */
+- (void)fkRealGroupDeleteRealGroupFlagNotification:(NSNotification *)noti
+{
+    self.isDeleteRealGroup = YES;
+}
+/**
+ *  删除文件夹
+ */
+- (void)fkRealGroupDeleteRealGroupNotification:(NSNotification *)noti
+{
+    if (!self.isDeleteRealGroup || !self.isMoveToTrash)
     {
-        self.dictName = [NSDate date].description;
+        self.isMoveToTrash = YES;
         
-        NSString *dictPath = [NSString stringWithFormat:@"%@/%@", self.pathString, self.dictName];
-        
-        NSError *error;
-        BOOL isSuccess = [[NSFileManager defaultManager] createDirectoryAtPath:dictPath
-                                                   withIntermediateDirectories:YES
-                                                                    attributes:nil
-                                                                         error:&error];
-        
-        NSLog(@"%@%@",dictPath, isSuccess?@"创建成功":@"创建失败");
+        return;
     }
-    else
+    
+    self.isDeleteRealGroup = NO;
+    
+    for (NSString *groupPath in noti.object)
     {
-        self.dictName = nil;
+        [self moveToTrashWithGroupPath:groupPath];
     }
 }
-#pragma mark -- delegate
+
+- (void)fkRealGroupMoveToTrashNotification:(NSNotification *)noti
+{
+    if (self.menuState != NSOnState)
+    {
+        return;
+    }
+    
+    self.isMoveToTrash = ((NSNumber *)noti.object).boolValue;
+}
+
+#pragma mark - button pressed
+- (void)fk_buttonPressed:(id)arg1
+{
+    //Move To Trash
+    BOOL isMoveToTrash = YES;
+    NSString *buttonTitle = [NSString stringWithString:((NSButton *)arg1).title];
+    if (![buttonTitle isEqualToString:kMoveToTrashButtonTitle])
+    {
+        //移动到垃圾箱
+        isMoveToTrash = NO;
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFKRealGroupMoveToTrashNotificationKey
+                                                        object:@(isMoveToTrash)];
+    
+    [self fk_buttonPressed:arg1];
+}
+#pragma mark - delegate
 - (void)menuWillOpen:(NSMenu *)menu
 {
     NSMenuItem *newGroupItem;
     NSMenuItem *newRealGroupItem;
+    NSMenuItem *deleteItem;
+    NSMenuItem *deleteRealGroupItem;
+    
     NSInteger   newGroupItemIndex = 0;
+    NSInteger   deleteItemIndex = 0;
     
     for (int i = 0; i < menu.itemArray.count; i++)
     {
         NSMenuItem *item = menu.itemArray[i];
-        if ([item.title isKindOfClass:NSClassFromString(@"DVTPlugInLocalizedString")] &&
-            [[item.title valueForKeyPath:@"_key"] isEqualToString:@"Xcode.IDEKit.CmdDefinition.NewGroupContextual"])
+        
+        if ([item.title isKindOfClass:NSClassFromString(kDVTPlugInLocalizedString)])
         {
-            newGroupItem = item;
-            newGroupItemIndex = i;
+            if ([[item.title valueForKeyPath:@"_key"] isEqualToString:kNewGroupContextKey])
+            {
+                newGroupItem = item;
+                newGroupItemIndex = i;
+            }
+            else if ([[item.title valueForKeyPath:@"_key"] isEqualToString:kDeleteContextKey])
+            {
+                deleteItem = item;
+                deleteItemIndex = i;
+            }
             continue;
         }
-        
-        if (![item.title isKindOfClass:NSClassFromString(@"DVTPlugInLocalizedString")] &&
-            [item.title isEqualToString:@"New Real Group"])
+        else
         {
-            newRealGroupItem = item;
+            if ([item.title isEqualToString:kNewRealGroupItemTitle])
+            {
+                newRealGroupItem = item;
+            }
+            else if ([item.title isEqualToString:kDeleteRealGroupItemTitle])
+            {
+                deleteRealGroupItem = item;
+            }
             continue;
         }
     }
@@ -286,15 +485,27 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
     {
         if (!newRealGroupItem)
         {
-            //添加一个New Real Group
+            //添加 New Real Group
             newRealGroupItem =
-            [[NSMenuItem alloc] initWithTitle:@"New Real Group"
+            [[NSMenuItem alloc] initWithTitle:kNewRealGroupItemTitle
                                        action:@selector(fk_contextMenu_newRealGroupFolderOrPage:)
                                 keyEquivalent:@""];
             newRealGroupItem.enabled = YES;
             [menu insertItem:newRealGroupItem atIndex:newGroupItemIndex+1];
         }
         newRealGroupItem.hidden = NO;
+        
+        if (!deleteRealGroupItem)
+        {
+            //添加 Delete Real Group
+            deleteRealGroupItem =
+            [[NSMenuItem alloc] initWithTitle:kDeleteRealGroupItemTitle
+                                       action:@selector(fk_contextMenu_deleteRealGroup:)
+                                keyEquivalent:@""];
+            deleteRealGroupItem.enabled = YES;
+            [menu insertItem:deleteRealGroupItem atIndex:deleteItemIndex+1];
+        }
+        deleteRealGroupItem.hidden = NO;
     }
     else
     {
@@ -302,67 +513,100 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
         {
             newRealGroupItem.hidden = YES;
         }
+        
+        if (deleteRealGroupItem)
+        {
+            deleteRealGroupItem.hidden = YES;
+        }
     }
 }
+
 - (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor
 {
-    //修改前的文件名称  control->_stringValueBeforeEditing
-    //修改后的文件名称  ((NSTextField *)control).stringValue
-    //是否为文件夹
-    NSLog(@"修改前：%@\n修改后:%@",
-          [((NSTextField *)control) valueForKeyPath:@"_stringValueBeforeEditing"],
-          ((NSTextField *)control).stringValue);
-    //修改文件夹名称
-    NSString *dictPath = [NSString stringWithFormat:@"%@/%@", self.pathString, self.dictName];
-    NSString *newDictPath = [NSString stringWithFormat:@"%@/%@", self.pathString, ((NSTextField *)control).stringValue];
-    
-    BOOL isDict;
-    BOOL isExistNewDict = [[NSFileManager defaultManager] fileExistsAtPath:newDictPath
-                                                               isDirectory:&isDict];
-    if (!isExistNewDict)
+    if (self.isDeleteRealGroup)
     {
-        BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:dictPath
-                                                            isDirectory:&isDict];
-        if (isExist && isDict)
+        return YES;
+    }
+    
+    if ([((NSTextField *)control).stringValue isEqualToString:@""])
+    {
+        [self alertWithMessageText:@"文件夹名称不能为空"];
+        return NO;
+    }
+    
+    Xcode3Group *targetGroup = [self.ideTarget valueForKeyPath:@"_targetGroup"];
+    PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
+    
+    NSArray *subitems = targetPBXGroup.children;
+    
+    BOOL isContainInItems = [self isContainSameNameGroup:((NSTextField *)control).stringValue
+                                              inSubitems:subitems];
+    
+    BOOL isContainInPath  = [self isContainSameNameGroup:((NSTextField *)control).stringValue
+                                                  inPath:self.pathString];
+    
+    if ([[control valueForKeyPath:kStringValueBeforeEditingKeyPath]
+         isEqualToString:((NSTextField *)control).stringValue])
+    {
+        isContainInItems = NO;
+    }
+    
+    NSString *newDictPath = [NSString stringWithFormat:@"%@/%@",
+                             self.pathString,
+                             ((NSTextField *)control).stringValue];
+    
+    if (!isContainInItems && !isContainInPath)
+    {
+        //目录中无，本地无的文件夹，直接创建
+        NSError *error;
+        BOOL isSuccess = [[NSFileManager defaultManager] createDirectoryAtPath:newDictPath
+                                                   withIntermediateDirectories:YES
+                                                                    attributes:nil
+                                                                         error:&error];
+        
+        if (isSuccess)
         {
-            //修改名称
-            NSError *error;
-            BOOL isSuccess = [[NSFileManager defaultManager] moveItemAtPath:dictPath
-                                                                     toPath:newDictPath
-                                                                      error:&error];
-            NSLog(@"%@ %@", newDictPath, isSuccess?@"修改文件夹成功":@"修改文件夹失败");
-            //修改失败的话 删除原文件夹
-            if (!isSuccess)
+            //修改链接路径
+            if (self.newSubgroupIndex < subitems.count)
             {
-                BOOL isDelete = [[NSFileManager defaultManager] removeItemAtPath:dictPath error:&error];
-                NSLog(@"%@", isDelete?@"删除成功":@"删除失败");
+                PBXGroup *newGroup = subitems[self.newSubgroupIndex];
+                [newGroup setValue:((NSTextField *)control).stringValue forKeyPath:@"_name"];
+                [newGroup setValue:((NSTextField *)control).stringValue forKeyPath:@"_path"];
+                return YES;
+            }
+            else
+            {
+                [self alertWithMessageText:@"路径修改失败，请重试"];
+                return NO;
             }
         }
         else
         {
-            //创建
-            NSError *error;
-            BOOL isSuccess = [[NSFileManager defaultManager] createDirectoryAtPath:newDictPath
-                                                       withIntermediateDirectories:YES
-                                                                        attributes:nil
-                                                                             error:&error];
-            
-            NSLog(@"%@ %@",newDictPath, isSuccess?@"创建成功":@"创建失败");
+            //警告 - 文件夹创建失败
+            NSAlert *alert = [NSAlert alertWithError:error];
+            [alert runModal];
         }
-        
-        return YES;
+    }
+    else if (isContainInItems && isContainInPath)
+    {
+        //目录中有，本地有的文件夹，直接警告，不创建；
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在磁盘目录上已被占用，且已添加到工程目录上,请选取其他名称"]];
+    }
+    else if (!isContainInItems && isContainInPath)
+    {
+        //目录中无，本地有的文件夹，直接警告
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在工程目录上已被占用，但并未添加到工程目录上，请直接添加或者选取其他名称"]];
     }
     else
     {
-        NSAlert *alert = [NSAlert alertWithError:[NSError errorWithDomain:@"已经存在同名文件夹" code:500 userInfo:nil]];
-        [alert runModal];
-        return NO;
+        //目录中有，本地无的文件夹，警告，不创建
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在工程目录上已被占用，请选取其他名称"]];
     }
-#warning TODO:修改文件夹的引用
-#warning PBXVariantGroup Xcode3VariantGroup
+    return NO;
 }
 
-#pragma mark -- hook method
+#pragma mark - hook method
+#pragma mark - 新建文件夹
 - (void)fk_contextMenu_newGroupFolderOrPage:(id)arg1
 {
     [self fk_contextMenu_newGroupFolderOrPage:arg1];
@@ -378,20 +622,166 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
 
 - (BOOL)fk_addNewSubgroupAtIndex:(unsigned long long)arg1 newGroupBlock:(id)arg2
 {
-    NSLog(@"文件位置:%@", [((IDEContainerItemStructureEditingTarget *)self) valueForKeyPath:@"_targetGroup._resolvedFilePath._pathString"]);
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:kFKRealGroupCreateNotificationKey
                                                         object:self
-                                                      userInfo:@{@"pathString":[((IDEContainerItemStructureEditingTarget *)self) valueForKeyPath:@"_targetGroup._resolvedFilePath._pathString"]?:@""}];
+                                                      userInfo:@{kPathStringKey:[((IDEContainerItemStructureEditingTarget *)self) valueForKeyPath:kPathStringKeyPath]?:@"",
+                                                                 kNewSubgroupIndexStringKey:@(arg1)}];
     
-    //在设置完成之后，可能要先删除文件夹引用 之后alloc一个新的 再插入进去 或者replace掉
-//    IDEContainerItemStructureEditingTarget->_targetGroup->_subitems->_backingArray
-//    Xcode3VariantGroup->_defaultReference->_filReference
-//    Xcode3VariantFileReference PBXFileReference
     return [self fk_addNewSubgroupAtIndex:arg1 newGroupBlock:arg2];
 }
 
+#pragma mark - 删除文件夹
+- (void)fk_contextMenu_delete:(id)arg1
+{
+    [self fk_contextMenu_delete:arg1];
+}
+
+- (void)fk_contextMenu_deleteRealGroup:(id)arg1
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFKRealGroupDeleteRealGroupFlagNotificationKey
+                                                        object:@(1)];
+    
+    [self fk_contextMenu_delete:arg1];
+}
+
+- (BOOL)fk_structureEditingRemoveSubitemsAtIndexes:(id)arg1 error:(id *)arg2
+{
+    Xcode3Group *targetGroup = [self valueForKeyPath:@"_targetGroup"];
+    PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
+    NSArray *subitems = targetPBXGroup.children;
+    
+    NSMutableArray *pathArray = [NSMutableArray array];
+    
+    NSIndexSet *indexSet = arg1;
+    [indexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+        id item = subitems[idx];
+        if ([item isKindOfClass:NSClassFromString(@"PBXGroup")])
+        {
+            PBXGroup *group = item;
+            if ([group valueForKeyPath:@"_path"])
+            {
+                //文件夹路径
+                NSString *parentGroupPath = [targetGroup valueForKeyPath:@"_resolvedFilePath._pathString"];
+                NSString *groupPath = [NSString stringWithFormat:@"%@/%@", parentGroupPath, [group valueForKeyPath:@"_path"]];
+                [pathArray addObject:groupPath];
+            }
+        }
+    }];
+    
+    BOOL isRemoved = [self fk_structureEditingRemoveSubitemsAtIndexes:arg1 error:arg2];
+    
+    if (isRemoved)
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kFKRealGroupDeleteRealGroupNotificationKey
+                                                            object:pathArray];
+    }
+    return isRemoved;
+}
+
 #pragma mark -- method
+/**
+ *  是否包含同名文件夹在父文件夹数组内
+ *
+ *  @param groupName 文件夹名称
+ *  @param subitems  父文件夹数组
+ *
+ *  @return 是否包含
+ */
+- (BOOL)isContainSameNameGroup:(NSString *)groupName inSubitems:(NSArray *)subitems
+{
+    for (id item in subitems)
+    {
+        if ([item isKindOfClass:NSClassFromString(@"PBXGroup")])
+        {
+            if ([((PBXGroup *)item).name isEqualToString:groupName])
+            {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+/**
+ *  是否包含同名文件夹在路径上
+ *
+ *  @param groupName 文件夹名称
+ *  @param path      文件夹路径
+ *
+ *  @return 是否包含
+ */
+- (BOOL)isContainSameNameGroup:(NSString *)groupName inPath:(NSString *)path
+{
+    NSString *dictPath = [NSString stringWithFormat:@"%@/%@", path, groupName];
+    
+    BOOL isDict;
+    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:dictPath
+                                                         isDirectory:&isDict];
+    if (isExists && isDict)
+    {
+        return YES;
+    }
+    return NO;
+}
+
+/**
+ *  FKRealGroup开关状态
+ *
+ *  @return 是否开启
+ */
+- (NSCellStateValue)fkRealGroupState
+{
+    NSNumber *value = [[NSUserDefaults standardUserDefaults] objectForKey:kFKRealGroupKey];
+    if (!value)
+    {
+        value = @(1);
+    }
+    return value.integerValue;
+}
+/**
+ *  保存FKRealGroup开关状态
+ */
+- (void)saveFKRealGroupOpenState
+{
+    [[NSUserDefaults standardUserDefaults] setValue:@(self.menuState)
+                                             forKey:kFKRealGroupKey];
+}
+
+/**
+ *  移动文件夹到废纸篓
+ *
+ *  @param groupPath 待删除的文件夹路径
+ */
+- (void)moveToTrashWithGroupPath:(NSString *)groupPath
+{
+    BOOL isDict;
+    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:groupPath
+                                                         isDirectory:&isDict];
+    if (isExists && isDict)
+    {
+        NSError *error;
+        //将文件夹移动到废纸篓中
+        NSURL *trashItemUrl = [NSURL fileURLWithPath:groupPath isDirectory:YES];
+        
+        BOOL isSuccess = [[NSFileManager defaultManager] trashItemAtURL:trashItemUrl
+                                                       resultingItemURL:nil
+                                                                  error:&error];
+#ifdef DEBUG
+        if (!isSuccess)
+        {
+            NSLog(@"删除失败--%@ -- %@", trashItemUrl, error);
+        }
+#endif
+    }
+}
+
+- (void)alertWithMessageText:(NSString *)messageText
+{
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = messageText;
+    [alert runModal];
+}
+
 - (void)addMenu
 {
     NSMenu *mainMenu = [NSApp mainMenu];
@@ -410,17 +800,11 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
         [mainMenu insertItem:pluginsMenuItem atIndex:windowIndex];
     }
     
-    NSNumber *value = [[NSUserDefaults standardUserDefaults] objectForKey:kFKRealGroupKey];
-    if (!value)
-    {
-        value = @(1);
-    }
-    
     NSMenuItem *subMenuItem = [[NSMenuItem alloc] init];
     subMenuItem.title = @"FKRealGroup";
     subMenuItem.target = self;
     subMenuItem.action = @selector(toggleMenu:);
-    subMenuItem.state = value.boolValue?NSOnState:NSOffState;
+    subMenuItem.state = [self fkRealGroupState];
     [pluginsMenuItem.submenu addItem:subMenuItem];
     
     self.menuState = subMenuItem.state;
@@ -429,12 +813,20 @@ static NSString * const kFKRealGroupRealCreateNotificationKey = @"FKRealGroupRea
 - (void)toggleMenu:(NSMenuItem *)menuItem
 {
     menuItem.state = !menuItem.state;
-    
     self.menuState = menuItem.state;
     
-    [[NSUserDefaults standardUserDefaults] setValue:@(menuItem.state)
-                                             forKey:kFKRealGroupKey];
+    if (menuItem.state == NSOnState)
+    {
+        [self addObservers];
+    }
+    else
+    {
+        [self removeObservers];
+    }
+    
+    [self saveFKRealGroupOpenState];
 }
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

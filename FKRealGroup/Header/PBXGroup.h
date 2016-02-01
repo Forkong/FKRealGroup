@@ -59,12 +59,16 @@
 - (void)insertItem:(id)arg1 atIndex:(unsigned long long)arg2;
 - (void)insertItems:(id)arg1 atIndex:(unsigned long long)arg2;
 - (void)_removeItemFromChildrenOnly:(id)arg1;
+
+
 - (void)didMoveItem:(id)arg1 toGroup:(id)arg2;
 - (void)willMoveItem:(id)arg1 toGroup:(id)arg2;
 - (void)didRemoveItem:(id)arg1;
 - (void)willRemoveItem:(id)arg1;
 - (void)didAddItem:(id)arg1;
 - (void)willAddItem:(id)arg1;
+
+
 - (BOOL)acceptsItem:(id)arg1;
 - (id)destinationGroupForInsertion;
 - (BOOL)isAncestorOfItem:(id)arg1;
@@ -78,7 +82,7 @@
 - (BOOL)isGroup;
 - (BOOL)isLeaf;
 - (BOOL)allowsEditingOfChildren;
-- (id)name;
+- (NSString *)name;
 - (void)dealloc;
 - (id)copyWithZone:(struct _NSZone *)arg1 getUnretainedObjectMappings:(id *)arg2;
 - (id)initWithName:(id)arg1 path:(id)arg2 sourceTree:(id)arg3;
@@ -87,8 +91,7 @@
 - (void)replaceInFileReferences:(id)arg1 atIndex:(unsigned long long)arg2;
 - (void)insertInFileReferences:(id)arg1;
 - (void)insertInFileReferences:(id)arg1 atIndex:(unsigned long long)arg2;
-- (void)removeFromGroupsAtIndex:(unsigned long long)arg1;
-- (void)replaceInGroups:(id)arg1 atIndex:(unsigned long long)arg2;
+//- (void)replaceInGroups:(id)arg1 atIndex:(unsigned long long)arg2;
 - (void)insertInGroups:(id)arg1;
 - (void)insertInGroups:(id)arg1 atIndex:(unsigned long long)arg2;
 - (void)removeFromChildrenAtIndex:(unsigned long long)arg1;

@@ -29,19 +29,13 @@
 		79A868721C58764C00557DF6 /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		79A868731C58764C00557DF6 /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
 		79A868751C588C4A00557DF6 /* IDEStructureNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEStructureNavigator.h; sourceTree = "<group>"; };
-		79A868791C588D4C00557DF6 /* IDEOutlineBasedNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEOutlineBasedNavigator.h; sourceTree = "<group>"; };
 		79A8687B1C58963700557DF6 /* IDEContainerItemStructureEditingTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEContainerItemStructureEditingTarget.h; sourceTree = "<group>"; };
-		79A8687C1C58988300557DF6 /* PBXGroup-PBXDropReceiverAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXDropReceiverAdditions.h"; sourceTree = "<group>"; };
-		79A8687D1C58988300557DF6 /* PBXGroup-PBXIconImageAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXIconImageAdditions.h"; sourceTree = "<group>"; };
-		79A8687E1C58988300557DF6 /* PBXGroup-PBXInspectorPanelSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-PBXInspectorPanelSupport.h"; sourceTree = "<group>"; };
-		79A8687F1C58988300557DF6 /* PBXGroup-SmartGroupFilterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PBXGroup-SmartGroupFilterAPI.h"; sourceTree = "<group>"; };
-		79A868801C58988300557DF6 /* PBXGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroup.h; sourceTree = "<group>"; };
-		79A868811C58988300557DF6 /* PBXGroupEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupEnumerator.h; sourceTree = "<group>"; };
-		79A868821C58988300557DF6 /* PBXGroupInspectorPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupInspectorPane.h; sourceTree = "<group>"; };
-		79A868831C58988300557DF6 /* PBXGroupTargetProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupTargetProxy.h; sourceTree = "<group>"; };
-		79A868841C58988300557DF6 /* PBXGroupTreeModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroupTreeModule.h; sourceTree = "<group>"; };
-		79A868851C58A45600557DF6 /* IDEGroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEGroupWrapper.h; sourceTree = "<group>"; };
-		79A868861C58A45600557DF6 /* Xcode3GroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Xcode3GroupWrapper.h; sourceTree = "<group>"; };
+		79CA4E261C59CCCE005A17D1 /* PBXReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXReference.h; sourceTree = "<group>"; };
+		79CA4E281C59E56E005A17D1 /* IDEGroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEGroupWrapper.h; sourceTree = "<group>"; };
+		79CA4E2D1C59E56E005A17D1 /* PBXGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PBXGroup.h; sourceTree = "<group>"; };
+		79CA4E321C59E56E005A17D1 /* Xcode3GroupWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Xcode3GroupWrapper.h; sourceTree = "<group>"; };
+		79CA4E331C59E5A6005A17D1 /* Xcode3Group.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Xcode3Group.h; sourceTree = "<group>"; };
+		79CA4E3A1C5A082A005A17D1 /* IDEOutlineBasedNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDEOutlineBasedNavigator.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,19 +106,13 @@
 			children = (
 				7907E8281C57753C00CD0FCE /* DVTPlugInLocalizedString.h */,
 				79A868751C588C4A00557DF6 /* IDEStructureNavigator.h */,
+				79CA4E3A1C5A082A005A17D1 /* IDEOutlineBasedNavigator.h */,
 				79A8687B1C58963700557DF6 /* IDEContainerItemStructureEditingTarget.h */,
-				79A868791C588D4C00557DF6 /* IDEOutlineBasedNavigator.h */,
-				79A8687C1C58988300557DF6 /* PBXGroup-PBXDropReceiverAdditions.h */,
-				79A8687D1C58988300557DF6 /* PBXGroup-PBXIconImageAdditions.h */,
-				79A8687E1C58988300557DF6 /* PBXGroup-PBXInspectorPanelSupport.h */,
-				79A8687F1C58988300557DF6 /* PBXGroup-SmartGroupFilterAPI.h */,
-				79A868801C58988300557DF6 /* PBXGroup.h */,
-				79A868811C58988300557DF6 /* PBXGroupEnumerator.h */,
-				79A868821C58988300557DF6 /* PBXGroupInspectorPane.h */,
-				79A868831C58988300557DF6 /* PBXGroupTargetProxy.h */,
-				79A868841C58988300557DF6 /* PBXGroupTreeModule.h */,
-				79A868851C58A45600557DF6 /* IDEGroupWrapper.h */,
-				79A868861C58A45600557DF6 /* Xcode3GroupWrapper.h */,
+				79CA4E261C59CCCE005A17D1 /* PBXReference.h */,
+				79CA4E281C59E56E005A17D1 /* IDEGroupWrapper.h */,
+				79CA4E2D1C59E56E005A17D1 /* PBXGroup.h */,
+				79CA4E321C59E56E005A17D1 /* Xcode3GroupWrapper.h */,
+				79CA4E331C59E5A6005A17D1 /* Xcode3Group.h */,
 			);
 			path = Header;
 			sourceTree = "<group>";
