@@ -5,7 +5,7 @@
 ---- 
 FKRealGroup是一个辅助Xcode创建、删除文件夹的插件。FKRealGroup会在编辑菜单中添加”New Real Group”和”Delete Real Group”两个选项。
 
-![image](https://raw.githubusercontent.com/Forkong/FKConsole/master/Screenshots/fkrealgroup_1.jpg)
+![image](https://raw.githubusercontent.com/Forkong/FKRealGroup/master/ScreenShots/fkrealgroup_1.jpg)
 
 #### 新建文件夹
 
@@ -30,7 +30,7 @@ FKRealGroup可以解决这个问题。”New Real Group”选项会在相应磁�
 
 在删除多目录、多种类的文件的时候，Xcode会进行如下的提示:
 
-![image](https://raw.githubusercontent.com/Forkong/FKConsole/master/Screenshots/fkrealgroup_2.jpg)
+![image](https://raw.githubusercontent.com/Forkong/FKRealGroup/master/ScreenShots/fkrealgroup_2.jpg)
 
 FKRealGroup只会在选择”Move To Trash”的情况下删除真实文件夹。
 （我没有找到比较好的办法，所以这里的实现比较拙劣，如果有人知道更好的版本，请告诉我，多谢！）
@@ -49,7 +49,7 @@ FKRealGroup只会在选择”Move To Trash”的情况下删除真实文件夹�
 ---- 
 点击Xcode的Plugins菜单，在FKRealGroup选项上可以进行开关。
 
-![image](https://raw.githubusercontent.com/Forkong/FKConsole/master/Screenshots/fkrealgroup_3.jpg)
+![image](https://raw.githubusercontent.com/Forkong/FKRealGroup/master/ScreenShots/fkrealgroup_3.jpg)
 
 ### Xcode version?
 
