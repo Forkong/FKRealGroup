@@ -40,7 +40,7 @@ FKRealGroup只会在选择”Move To Trash”的情况下删除真实文件夹�
 ---- 
 推荐使用[Alcatraz](https://github.com/alcatraz/Alcatraz)。
 
-你也可以clone整个工程，然后编译，插件会自动安装到/Library/Application Support/Developer/Shared/Xcode/Plug-ins这个目录上。
+你也可以clone整个工程，然后编译，插件会自动安装到`~/Library/Application Support/Developer/Shared/Xcode/Plug-ins`这个目录上。
 
 一定要选Load Bundle，Skip的话，插件是无法生效的。
 
