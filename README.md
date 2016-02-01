@@ -1,9 +1,9 @@
-## FKRealGroup - Xcode文件夹创建删除辅助插件
+## FKRealGroup - Xcode文件夹创建删除增强插件
 ---- 
 ### What is this?
 
 ---- 
-FKRealGroup是一个辅助Xcode创建、删除文件夹的插件。FKRealGroup会在编辑菜单中添加”New Real Group”和”Delete Real Group”两个选项。
+FKRealGroup是一个增强Xcode创建、删除文件夹的插件。FKRealGroup会在编辑菜单中添加”New Real Group”和”Delete Real Group”两个选项。
 
 ![image](https://raw.githubusercontent.com/Forkong/FKRealGroup/master/ScreenShots/fkrealgroup_1.jpg)
 
