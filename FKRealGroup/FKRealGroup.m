@@ -530,7 +530,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     
     if ([((NSTextField *)control).stringValue isEqualToString:@""])
     {
-        [self alertWithMessageText:@"文件夹名称不能为空"];
+        [self alertWithMessageText:@"The folder name can not be empty."];
         return NO;
     }
     
@@ -576,7 +576,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
             }
             else
             {
-                [self alertWithMessageText:@"路径修改失败，请重试"];
+                [self alertWithMessageText:@"Path modification failed, please try again."];
                 return NO;
             }
         }
@@ -590,23 +590,23 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     else if (isContainInItems && isContainInPath)
     {
         //目录中有，本地有的文件夹，直接警告，不创建；
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在磁盘目录上已被占用，且已添加到工程目录上,请选取其他名称"]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied on the disk directory, and has been added to the project, please select another name."]];
     }
     else if (!isContainInItems && isContainInPath)
     {
         //目录中无，本地有的文件夹，直接警告
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在工程目录上已被占用，但并未添加到工程目录上，请直接添加或者选取其他名称"]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied on the project，but did not add to the project, please add or select another name."]];
     }
     else
     {
         //目录中有，本地无的文件夹，警告，不创建
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"名称为",((NSTextField *)control).stringValue,@"的文件夹在工程目录上已被占用，请选取其他名称"]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied in the project, please select another name."]];
     }
     return NO;
 }
 
 #pragma mark - hook method
-#pragma mark - 新建文件夹
+#pragma mark - new group
 - (void)fk_contextMenu_newGroupFolderOrPage:(id)arg1
 {
     [self fk_contextMenu_newGroupFolderOrPage:arg1];
@@ -630,7 +630,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     return [self fk_addNewSubgroupAtIndex:arg1 newGroupBlock:arg2];
 }
 
-#pragma mark - 删除文件夹
+#pragma mark - delete group
 - (void)fk_contextMenu_delete:(id)arg1
 {
     [self fk_contextMenu_delete:arg1];
@@ -678,7 +678,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     return isRemoved;
 }
 
-#pragma mark -- method
+#pragma mark - method
 /**
  *  是否包含同名文件夹在父文件夹数组内
  *
@@ -769,7 +769,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 #ifdef DEBUG
         if (!isSuccess)
         {
-            NSLog(@"删除失败--%@ -- %@", trashItemUrl, error);
+            NSLog(@"delete failed --%@ -- %@", trashItemUrl, error);
         }
 #endif
     }

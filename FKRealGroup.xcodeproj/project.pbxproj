@@ -156,7 +156,6 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 			);
 			mainGroup = 7907E8071C576D4700CD0FCE;
 			productRefGroup = 7907E8111C576D4700CD0FCE /* Products */;
