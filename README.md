@@ -14,7 +14,7 @@ FKRealGroup是一个增强Xcode创建、删除文件夹的插件。FKRealGroup�
 
 "New Real Group" can create a real folder on the disk, rather than the virtual folder. If the disk or project has the same name folder, it will warn.
 
-Time if you named the folder, you pressed "ESC",FKRealGroup will not create real folder.(I will fix this in the future.)
+Time if you named the folder, and did not modify the name (the default folder name is `New Group`), you pressed `ESC` or `Return`, FKRealGroup will not create real folder.(I will fix this in the future.)
 
 我们知道，Xcode本身的”New Group”选项只会创建一个虚拟文件夹，并不会在本地磁盘创建真实文件夹。一般来说，我们会右击-\>Show in Finder-\>在文件目录创建文件夹-\>右击-\>Add Files to “xxx”…，非常繁琐。
 
@@ -27,7 +27,7 @@ FKRealGroup可以解决这个问题。”New Real Group”选项会在相应磁�
 
 在”New Real Group”创建出的文件夹上，右击-\>Show in Finder，会前往正确的目录。在”New Real Group”创建出的文件夹内，新建文件或者文件夹，文件或文件夹将建于”New Real Group”创建出的文件夹内。
 
-如果通过”New Real Group”创建文件夹，命名的时候，如果按”ESC”键将不创建真实文件夹（我没有找到有用的代理，或者切入的口，下面可能需要使用监控键盘的方式切进去，如果大家有什么好的办法，请告诉我）。
+如果通过”New Real Group”创建文件夹，没有修改（例如，默认新建的文件夹名称为`New Group`），直接确认(回车或者鼠标点击其他地方)，或者直接按`ESC`，将不会创建文件夹，此问题待修复。
 
 #### 删除文件夹
 
