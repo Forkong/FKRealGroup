@@ -13,15 +13,18 @@
 #import "IDEContainerItemStructureEditingTarget.h"
 #import "Xcode3Group.h"
 #import "PBXGroup.h"
+#import <Carbon/Carbon.h>
 
 static NSString * const kFKRealGroupKey = @"FKRealGroup";
 static NSString * const kPathStringKey = @"pathString";
+static NSString * const kGroupNameBeforeEditingKey = @"groupNameBeforeEditing";
 static NSString * const kNewSubgroupIndexStringKey = @"newSubgroupIndex";
 static NSString * const kDVTPlugInLocalizedString = @"DVTPlugInLocalizedString";
 static NSString * const kIsDeleteRealGroupKey = @"isDeleteRealGroup";
 //------Key Path ---------
 static NSString * const kPathStringKeyPath = @"_targetGroup._resolvedFilePath._pathString";
 static NSString * const kStringValueBeforeEditingKeyPath = @"_stringValueBeforeEditing";
+static NSString * const kNewGroupNameBeforeEditingKeyPath = @"";
 //------Title ------------
 static NSString * const kNewRealGroupItemTitle = @"New Real Group";
 static NSString * const kDeleteRealGroupItemTitle = @"Delete Real Group";
@@ -44,7 +47,9 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 
 @property (nonatomic, assign) NSCellStateValue menuState;
 
-@property (nonatomic, copy) NSString *pathString;
+@property (nonatomic, copy)   NSString *pathString;
+
+@property (nonatomic, copy)   NSString *groupNameBeforeEditing;
 
 @property (nonatomic, assign) BOOL isRealCreate;
 
@@ -55,6 +60,10 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 @property (nonatomic, strong) IDEContainerItemStructureEditingTarget *ideTarget;
 
 @property (nonatomic, assign) NSInteger newSubgroupIndex;
+
+@property (nonatomic, strong) id eventMonitor;
+
+@property (nonatomic, strong) NSTextField *textField;
 @end
 
 @implementation FKRealGroup
@@ -120,15 +129,14 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(controlTextDidEndEditingNotification:)
-                                                 name:NSControlTextDidEndEditingNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(controlTextDidBeginEditingNotification:)
                                                  name:NSControlTextDidBeginEditingNotification
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(controlTextDidEndEditingNotification:)
+                                                 name:NSControlTextDidEndEditingNotification
+                                               object:nil];    
 }
 
 - (void)removeObservers
@@ -229,33 +237,34 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     }
 }
 
-- (void)addClassMethodWithClass:(Class)className newMethod:(SEL)newMethod originMethod:(SEL)originMethod
+/**
+ *  键盘监控 检测ESC按键
+ */
+- (void)addKeyboardEventMonitor
 {
-    Method targetMethod = class_getClassMethod(className, newMethod);
-    
-    Method consoleMethod = class_getClassMethod(self.class, newMethod);
-    IMP consoleIMP = method_getImplementation(consoleMethod);
-    
-    if (!targetMethod)
-    {
-        class_addMethod(className, newMethod, consoleIMP, method_getTypeEncoding(consoleMethod));
-        
-        if (originMethod)
+    self.eventMonitor =
+    [NSEvent addLocalMonitorForEventsMatchingMask:NSKeyDownMask handler:^NSEvent *(NSEvent *incomingEvent) {
+        if (self.isRealCreate &&
+            [incomingEvent keyCode] == kVK_Escape)
         {
-            NSError *error;
-            BOOL isSuccess = [className jr_swizzleClassMethod:newMethod
-                                              withClassMethod:originMethod
-                                                        error:&error];
-#ifdef DEBUG
-            if (!isSuccess)
+            //在编辑状态下 创建此文件夹 此文件夹名称为原始名称
+            if (self.pathString &&
+                self.groupNameBeforeEditing)
             {
-                NSLog(@"error = %@", error);
+                [self control:self.textField groupName:self.groupNameBeforeEditing];
             }
-#endif
+            
+            [self controlTextDidEndEditingNotification:nil];
         }
-    }
+        return incomingEvent;
+    }];
 }
 
+- (void)removeKeyboardEventMonitor
+{
+    [NSEvent removeMonitor:self.eventMonitor];
+    self.eventMonitor = nil;
+}
 #pragma mark - notification
 - (void)didApplicationFinishLaunchingNotification:(NSNotification*)noti
 {
@@ -266,6 +275,7 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     if ([self fkRealGroupState] == NSOnState)
     {
         [self addObservers];
+        [self addKeyboardEventMonitor];
     }
     
     [self addMenu];
@@ -342,6 +352,8 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     
     //真实修改文件名称
     self.pathString = nil;
+    self.groupNameBeforeEditing = nil;
+    self.textField = nil;
     self.isRealCreate = NO;
     self.ideTarget = nil;
     self.newSubgroupIndex = NSNotFound;
@@ -360,8 +372,10 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
         return;
     }
     
-    NSTextField *textField = noti.object;
-    textField.delegate = self;
+    self.groupNameBeforeEditing = [noti.object valueForKeyPath:kStringValueBeforeEditingKeyPath];
+    
+    self.textField = noti.object;
+    self.textField.delegate = self;
 }
 
 - (void)fkRealGroupRealCreateNotification:(NSNotification *)noti
@@ -534,26 +548,32 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
         return NO;
     }
     
+    return [self control:control groupName:((NSTextField *)control).stringValue];
+}
+
+- (BOOL)control:(NSControl *)control groupName:(NSString *)groupName
+{
     Xcode3Group *targetGroup = [self.ideTarget valueForKeyPath:@"_targetGroup"];
     PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
     
     NSArray *subitems = targetPBXGroup.children;
     
-    BOOL isContainInItems = [self isContainSameNameGroup:((NSTextField *)control).stringValue
+    BOOL isContainInItems = [self isContainSameNameGroup:groupName
                                               inSubitems:subitems];
     
-    BOOL isContainInPath  = [self isContainSameNameGroup:((NSTextField *)control).stringValue
+    BOOL isContainInPath  = [self isContainSameNameGroup:groupName
                                                   inPath:self.pathString];
     
     if ([[control valueForKeyPath:kStringValueBeforeEditingKeyPath]
-         isEqualToString:((NSTextField *)control).stringValue])
+         isEqualToString:groupName])
     {
+        //如果文件名称和编辑前一致，则认为工程中不包含此文件夹
         isContainInItems = NO;
     }
     
     NSString *newDictPath = [NSString stringWithFormat:@"%@/%@",
                              self.pathString,
-                             ((NSTextField *)control).stringValue];
+                             groupName];
     
     if (!isContainInItems && !isContainInPath)
     {
@@ -570,8 +590,8 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
             if (self.newSubgroupIndex < subitems.count)
             {
                 PBXGroup *newGroup = subitems[self.newSubgroupIndex];
-                [newGroup setValue:((NSTextField *)control).stringValue forKeyPath:@"_name"];
-                [newGroup setValue:((NSTextField *)control).stringValue forKeyPath:@"_path"];
+                [newGroup setValue:groupName forKeyPath:@"_name"];
+                [newGroup setValue:groupName forKeyPath:@"_path"];
                 return YES;
             }
             else
@@ -590,21 +610,20 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     else if (isContainInItems && isContainInPath)
     {
         //目录中有，本地有的文件夹，直接警告，不创建；
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied on the disk directory, and has been added to the project, please select another name."]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",groupName,@" has been occupied on the disk directory, and has been added to the project, please select another name."]];
     }
     else if (!isContainInItems && isContainInPath)
     {
         //目录中无，本地有的文件夹，直接警告
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied on the project，but did not add to the project, please add or select another name."]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",groupName,@" has been occupied on the project，but did not add to the project, please add or select another name."]];
     }
     else
     {
         //目录中有，本地无的文件夹，警告，不创建
-        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",((NSTextField *)control).stringValue,@" has been occupied in the project, please select another name."]];
+        [self alertWithMessageText:[NSString stringWithFormat:@"%@\"%@\"%@",@"The folder name is ",groupName,@" has been occupied in the project, please select another name."]];
     }
     return NO;
 }
-
 #pragma mark - hook method
 #pragma mark - new group
 - (void)fk_contextMenu_newGroupFolderOrPage:(id)arg1
@@ -691,12 +710,10 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 {
     for (id item in subitems)
     {
-        if ([item isKindOfClass:NSClassFromString(@"PBXGroup")])
+        if ([item isKindOfClass:NSClassFromString(@"PBXGroup")] &&
+            [((PBXGroup *)item).name isEqualToString:groupName])
         {
-            if ([((PBXGroup *)item).name isEqualToString:groupName])
-            {
-                return YES;
-            }
+            return YES;
         }
     }
     return NO;
@@ -818,10 +835,12 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     if (menuItem.state == NSOnState)
     {
         [self addObservers];
+        [self addKeyboardEventMonitor];
     }
     else
     {
         [self removeObservers];
+        [self removeKeyboardEventMonitor];
     }
     
     [self saveFKRealGroupOpenState];

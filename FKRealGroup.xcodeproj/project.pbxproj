@@ -155,8 +155,6 @@
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
-			knownRegions = (
-			);
 			mainGroup = 7907E8071C576D4700CD0FCE;
 			productRefGroup = 7907E8111C576D4700CD0FCE /* Products */;
 			projectDirPath = "";
