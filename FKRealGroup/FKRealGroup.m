@@ -460,8 +460,8 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     NSMenuItem *deleteItem;
     NSMenuItem *deleteRealGroupItem;
     
-    NSInteger   newGroupItemIndex = 0;
-    NSInteger   deleteItemIndex = 0;
+    NSInteger   newGroupItemIndex = NSNotFound;
+    NSInteger   deleteItemIndex = NSNotFound;
     
     for (int i = 0; i < menu.itemArray.count; i++)
     {
@@ -495,9 +495,11 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
         }
     }
     
-    if (self.menuState == NSOnState)
+    if (self.menuState == NSOnState &&
+        menu.itemArray.count > 0)
     {
-        if (!newRealGroupItem)
+        if (!newRealGroupItem &&
+            newGroupItemIndex != NSNotFound)
         {
             //添加 New Real Group
             newRealGroupItem =
@@ -509,7 +511,8 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
         }
         newRealGroupItem.hidden = NO;
         
-        if (!deleteRealGroupItem)
+        if (!deleteRealGroupItem &&
+            deleteItemIndex != NSNotFound)
         {
             //添加 Delete Real Group
             deleteRealGroupItem =
