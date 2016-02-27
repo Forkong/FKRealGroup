@@ -556,6 +556,15 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 
 - (BOOL)control:(NSControl *)control groupName:(NSString *)groupName
 {
+    if (self.pathString == nil ||
+        [self.pathString isEqualToString:@""])
+    {
+        //此情况下为没有正确获取到路径 那么允许直接命名 但并不创建真实文件夹
+        [self alertWithMessageText:@"Could not create folder, please delete and try anain."];
+        
+        return YES;
+    }
+    
     Xcode3Group *targetGroup = [self.ideTarget valueForKeyPath:@"_targetGroup"];
     PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
     
