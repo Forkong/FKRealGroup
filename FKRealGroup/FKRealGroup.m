@@ -566,6 +566,12 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
     }
     
     Xcode3Group *targetGroup = [self.ideTarget valueForKeyPath:@"_targetGroup"];
+    
+    if (![targetGroup isKindOfClass:NSClassFromString(@"Xcode3Group")])
+    {
+        return YES;
+    }
+    
     PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
     
     NSArray *subitems = targetPBXGroup.children;
@@ -678,7 +684,14 @@ static NSString * const kFKRealGroupMoveToTrashNotificationKey = @"FKRealGroupMo
 - (BOOL)fk_structureEditingRemoveSubitemsAtIndexes:(id)arg1 error:(id *)arg2
 {
     Xcode3Group *targetGroup = [self valueForKeyPath:@"_targetGroup"];
+    
+    if (![targetGroup isKindOfClass:NSClassFromString(@"Xcode3Group")])
+    {
+        return YES;
+    }
+    
     PBXGroup *targetPBXGroup = [targetGroup valueForKeyPath:@"_group"];
+    
     NSArray *subitems = targetPBXGroup.children;
     
     NSMutableArray *pathArray = [NSMutableArray array];
